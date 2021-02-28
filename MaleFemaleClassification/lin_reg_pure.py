@@ -6,6 +6,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import roc_auc_score
 
+
 if __name__ == '__main__':
     pd.set_option("mode.chained_assignment", None)
     path = "data/gender.csv"
@@ -28,14 +29,11 @@ if __name__ == '__main__':
     y_train['Gender'] =  y_train.loc[:, 'Gender'] == 'Male'
 
     classifier = SGDClassifier(loss='log', max_iter=10000, n_jobs=-1)
-
     classifier.fit(X_train_scaled, y_train.values.ravel())
 
     y_found = classifier.predict(X_train_scaled)
     matrix = confusion_matrix(y_true=y_train, y_pred=y_found)
-    print(matrix)
     print('sgd_classfier w/o optimizations')
     print(roc_auc_score(y_train.values.ravel(), classifier.decision_function(X_train_scaled)))
-    y_train_pred_cross_val = cross_val_predict(classifier, X_train_scaled, y_train.values.ravel(), cv=1200, n_jobs=-1, verbose=3)
-    matrix = confusion_matrix(y_true=y_train, y_pred=y_train_pred_cross_val)
-    print(matrix)
+
+    y_train_predict = cross_val_predict()
