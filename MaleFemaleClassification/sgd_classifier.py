@@ -3,8 +3,8 @@ from sklearn.linear_model import SGDClassifier
 from sklearn.model_selection import StratifiedShuffleSplit, cross_val_predict
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import confusion_matrix
-from sklearn.metrics import roc_auc_score
+from sklearn.metrics import confusion_matrix, precision_recall_curve, roc_auc_score
+
 
 if __name__ == '__main__':
     pd.set_option("mode.chained_assignment", None)
@@ -38,4 +38,7 @@ if __name__ == '__main__':
     print(roc_auc_score(y_train.values.ravel(), classifier.decision_function(X_train_scaled)))
     y_train_pred_cross_val = cross_val_predict(classifier, X_train_scaled, y_train.values.ravel(), cv=1200, n_jobs=-1, verbose=3)
     matrix = confusion_matrix(y_true=y_train, y_pred=y_train_pred_cross_val)
+    print('sgd_classfier w/o optimizations but from cross val predict')
     print(matrix)
+    # here I want to get thresholds mapped
+
