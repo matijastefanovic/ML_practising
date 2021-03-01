@@ -36,13 +36,13 @@ if __name__ == '__main__':
     y_train['Gender'] =  y_train.loc[:, 'Gender'] == 'Male'
 
     classifier = SGDClassifier(loss='log', max_iter=10000, n_jobs=-1)
-
+    classifier.fit(X_train_scaled, y_train.values.ravel())
     y_scores = cross_val_predict(classifier, X_train_scaled, y_train.values.ravel(), cv=120, n_jobs=-1,
                                                verbose=3, method='decision_function')
 
     precisions, recalls, thresholds = precision_recall_curve(y_true=y_train, probas_pred=y_scores)
-    recall_90_precision = recalls[np.argmax(precisions >= 0.95)]
-    threshold_90_precision = thresholds[np.argmax(precisions >= 0.95)]
+    recall_90_precision = recalls[np.argmax(precisions >= 0.99)]
+    threshold_90_precision = thresholds[np.argmax(precisions >= 0.99)]
 
     # plt.figure()
     # plt.plot(thresholds, precisions[:-1], "b--", label='Precision')
@@ -50,9 +50,12 @@ if __name__ == '__main__':
     # plt.legend()
     # plt.grid()
     # plt.show()
-    plot_precision_recall_vs_threshold(precisions, recalls, thresholds)
-    plt.plot([threshold_90_precision, threshold_90_precision], [0., 0.95], "r:")  # Not shown
-    plt.plot([-10, threshold_90_precision], [0.95, 0.95], "r:")  # Not shown
-    plt.plot([-10, threshold_90_precision], [recall_90_precision, recall_90_precision], "r:")  # Not shown
-    plt.plot([threshold_90_precision], [0.95], "ro")  # Not shown
-    plt.plot([threshold_90_precision], [recall_90_precision], "ro")  # Not shown
+    # plot_precision_recall_vs_threshold(precisions, recalls, thresholds)
+    # plt.plot([threshold_90_precision, threshold_90_precision], [0., 0.99], "r:")  # Not shown
+    # plt.plot([-10, threshold_90_precision], [0.99, 0.99], "r:")  # Not shown
+    # plt.plot([-10, threshold_90_precision], [recall_90_precision, recall_90_precision], "r:")  # Not shown
+    # plt.plot([threshold_90_precision], [0.99], "ro")  # Not shown
+    # plt.plot([threshold_90_precision], [recall_90_precision], "ro")  # Not shown
+    certainties = pd.Series(classifier.decision_function(X_train_scaled), name='certainties')
+    result = pd.DataFrame(certainties)
+    result['sex_found'] = y_train.values.ravel()
